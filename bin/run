@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+require('@oclif/core/flush')
+require('../lib').run(process.argv.slice(2))
+.catch(require('@oclif/core/handle')) 

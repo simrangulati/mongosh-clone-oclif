@@ -1,0 +1,69 @@
+{
+  "name": "mongosh-clone",
+  "version": "1.0.0",
+  "description": "A MongoDB shell clone built with OCLIF",
+  "main": "lib/index.js",
+  "type": "commonjs",
+  "bin": {
+    "mongosh-clone": "./bin/run"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "npm run lint",
+    "prepack": "npm run build && oclif manifest",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md",
+    "lint": "eslint . --ext .ts --config .eslintrc"
+  },
+  "dependencies": {
+    "@oclif/core": "^2.8.0",
+    "@oclif/plugin-help": "^5.2.9",
+    "@oclif/plugin-plugins": "^2.4.7",
+    "mongodb": "^5.6.0",
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.4"
+  },
+  "devDependencies": {
+    "@oclif/test": "^2.3.17",
+    "@types/chai": "^4.3.5",
+    "@types/inquirer": "^8.2.6",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^16.18.34",
+    "@typescript-eslint/eslint-plugin": "^5.59.8",
+    "@typescript-eslint/parser": "^5.59.8",
+    "chai": "^4.3.7",
+    "eslint": "^7.32.0",
+    "eslint-config-oclif": "^4.0.0",
+    "eslint-config-oclif-typescript": "^1.0.3",
+    "mocha": "^9.2.2",
+    "oclif": "^3.8.1",
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.5.3",
+    "typescript": "^4.9.5"
+  },
+  "oclif": {
+    "bin": "mongosh-clone",
+    "dirname": "mongosh-clone",
+    "commands": "./lib/commands",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": " ",
+    "topics": {}
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "bugs": "https://github.com/user/mongosh-clone/issues",
+  "keywords": [
+    "oclif",
+    "mongodb",
+    "shell",
+    "cli"
+  ],
+  "types": "lib/index.d.ts"
+} 

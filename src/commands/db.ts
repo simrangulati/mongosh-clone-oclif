@@ -1,5 +1,6 @@
 import { Args, Command } from '@oclif/core';
 import { connectionManager } from '../lib/connection';
+import { OperationParser } from '../lib/operation-parser';
 import chalk from 'chalk';
 
 export default class Db extends Command {
@@ -40,47 +41,16 @@ export default class Db extends Command {
   private async executeOperation(operation: string): Promise<void> {
     console.log(`Debug - Original operation: "${operation}"`);
     
-    // Remove outer quotes if they exist (from shell quoting)
-    // Handle cases where the entire operation is wrapped in quotes
-    let cleanOperation = operation.trim();
+    // Use the robust parser instead of regex
+    const parsed = OperationParser.parse(operation);
+    OperationParser.validate(parsed);
     
-    // Remove matching outer quotes (single, double, or backticks)
-    if ((cleanOperation.startsWith("'") && cleanOperation.endsWith("'")) ||
-        (cleanOperation.startsWith('"') && cleanOperation.endsWith('"')) ||
-        (cleanOperation.startsWith('`') && cleanOperation.endsWith('`'))) {
-      cleanOperation = cleanOperation.slice(1, -1);
-    }
+    console.log(`Debug - Parsed operation:`, parsed);
     
-    console.log(`Debug - Cleaned operation: "${cleanOperation}"`);
-    
-    // Parse the operation: collection.method(args)
-    // Fixed regex without double backslashes
-    const match = cleanOperation.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\.([a-zA-Z_][a-zA-Z0-9_]*)\s*\((.*)\)$/s);
-    
-    if (!match) {
-      console.log(`Debug - Regex failed to match: "${cleanOperation}"`);
-      throw new Error(`Invalid operation format. Use: collection.method(args). Got: "${cleanOperation}"`);
-    }
-    
-    console.log(`Debug - Match successful:`, match);
-    console.log(`Debug - Collection: "${match[1]}", Method: "${match[2]}", Args: "${match[3]}"`);
-
-    const [, collectionName, method, argsString] = match;
+    const { collection: collectionName, method, arguments: args } = parsed;
     
     // Get the collection
     const collection = connectionManager.getCollection(collectionName);
-    
-    // Parse arguments (basic JSON parsing)
-    let args: any[] = [];
-    if (argsString.trim()) {
-      try {
-        // Handle multiple arguments separated by commas at the top level
-        const parsedArgs = this.parseArguments(argsString);
-        args = parsedArgs;
-      } catch (error) {
-        throw new Error(`Invalid JSON arguments: ${error}`);
-      }
-    }
 
     // Execute the operation based on the method
     let result: any;
@@ -175,62 +145,4 @@ export default class Db extends Command {
     }
   }
 
-  private parseArguments(argsString: string): any[] {
-    // Simple argument parser for JSON-like syntax
-    argsString = argsString.trim();
-    
-    if (!argsString) {
-      return [];
-    }
-
-    const args: any[] = [];
-    let currentArg = '';
-    let braceCount = 0;
-    let bracketCount = 0;
-    let inString = false;
-    let stringChar = '';
-    
-    for (let i = 0; i < argsString.length; i++) {
-      const char = argsString[i];
-      const prevChar = i > 0 ? argsString[i - 1] : '';
-      
-      if (!inString && (char === '"' || char === "'")) {
-        inString = true;
-        stringChar = char;
-        currentArg += char;
-      } else if (inString && char === stringChar && prevChar !== '\\\\') {
-        inString = false;
-        stringChar = '';
-        currentArg += char;
-      } else if (!inString) {
-        if (char === '{') {
-          braceCount++;
-          currentArg += char;
-        } else if (char === '}') {
-          braceCount--;
-          currentArg += char;
-        } else if (char === '[') {
-          bracketCount++;
-          currentArg += char;
-        } else if (char === ']') {
-          bracketCount--;
-          currentArg += char;
-        } else if (char === ',' && braceCount === 0 && bracketCount === 0) {
-          // Top-level comma, this separates arguments
-          args.push(JSON.parse(currentArg.trim()));
-          currentArg = '';
-        } else {
-          currentArg += char;
-        }
-      } else {
-        currentArg += char;
-      }
-    }
-    
-    if (currentArg.trim()) {
-      args.push(JSON.parse(currentArg.trim()));
-    }
-    
-    return args;
-  }
 } 

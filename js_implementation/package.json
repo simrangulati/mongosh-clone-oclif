@@ -1,0 +1,52 @@
+{
+  "name": "mongosh-clone-js",
+  "version": "1.0.0",
+  "description": "A JavaScript implementation of mongosh-like CLI tool using OCLIF",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "start": "node bin/run",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write src/**/*.js",
+    "generate:commands": "node scripts/generate-commands.js",
+    "generate:mvp": "node scripts/generate-commands.js --mvp-only",
+    "build": "npm run generate:commands",
+    "dev": "npm run generate:mvp && npm link",
+    "clean": "rm -rf src/commands/generated-*.js"
+  },
+  "bin": {
+    "mongosh-clone-js": "./bin/run"
+  },
+  "dependencies": {
+    "@oclif/core": "^3.0.0",
+    "mongodb": "^6.0.0",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "keywords": [
+    "mongodb",
+    "cli",
+    "database",
+    "mongosh",
+    "javascript"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/mongosh-clone-js.git"
+  },
+  "oclif": {
+    "bin": "mongosh-clone-js",
+    "dirname": "mongosh-clone-js",
+    "commands": "./src/commands",
+    "topicSeparator": " "
+  }
+} 

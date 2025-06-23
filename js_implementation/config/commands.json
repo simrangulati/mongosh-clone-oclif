@@ -1,0 +1,152 @@
+{
+  "commandGeneration": {
+    "enabled": true,
+    "outputDirectory": "src/commands",
+    "generateMVPOnly": false,
+    "categories": {
+      "provisioning": {
+        "enabled": true,
+        "priority": 1
+      },
+      "connection": {
+        "enabled": true,
+        "priority": 2
+      },
+      "collection_management": {
+        "enabled": true,
+        "priority": 3
+      },
+      "single_document": {
+        "enabled": true,
+        "priority": 4
+      },
+      "multi_document": {
+        "enabled": true,
+        "priority": 5
+      },
+      "cursor": {
+        "enabled": true,
+        "priority": 6
+      },
+      "index_management": {
+        "enabled": true,
+        "priority": 7
+      },
+      "aggregate": {
+        "enabled": false,
+        "priority": 8
+      },
+      "composite": {
+        "enabled": false,
+        "priority": 9
+      },
+      "bulk": {
+        "enabled": false,
+        "priority": 10
+      }
+    }
+  },
+  "deployment": {
+    "phases": {
+      "mvp": {
+        "description": "Minimum Viable Product - Core functionality",
+        "commands": [
+          "provision",
+          "status", 
+          "ping",
+          "connect",
+          "dbStats",
+          "getCollectionNames",
+          "close",
+          "insertOne",
+          "findOne",
+          "updateOne",
+          "deleteOne",
+          "insertMany",
+          "updateMany",
+          "deleteMany",
+          "find",
+          "createIndex",
+          "getIndexes"
+        ]
+      },
+      "extended": {
+        "description": "Extended functionality - Advanced operations",
+        "commands": [
+          "createCollection",
+          "countDocuments",
+          "findOneAndUpdate",
+          "findOneAndDelete",
+          "findOneAndReplace",
+          "bulkWrite",
+          "distinct",
+          "count",
+          "estimatedDocumentCount"
+        ]
+      }
+    }
+  },
+  "integration": {
+    "abdbLibrary": {
+      "package": "@adobe/aio-lib-abdb",
+      "version": "^1.0.0",
+      "mockMode": true,
+      "mockData": {
+        "collections": ["users", "products", "orders", "sessions", "logs"],
+        "sampleDocuments": {
+          "users": [
+            { "_id": "user1", "name": "John Doe", "email": "john@example.com", "active": true },
+            { "_id": "user2", "name": "Jane Smith", "email": "jane@example.com", "active": true }
+          ],
+          "products": [
+            { "_id": "prod1", "name": "Widget A", "price": 29.99, "category": "widgets" },
+            { "_id": "prod2", "name": "Gadget B", "price": 49.99, "category": "gadgets" }
+          ]
+        }
+      }
+    }
+  },
+  "validation": {
+    "strictMode": true,
+    "requireConnection": {
+      "provisioning": false,
+      "connection": false,
+      "all_others": true
+    },
+    "argumentValidation": {
+      "json": {
+        "maxDepth": 10,
+        "maxSize": "1MB"
+      },
+      "collection": {
+        "namePattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+        "maxLength": 64
+      }
+    }
+  },
+  "ui": {
+    "colorOutput": true,
+    "progressIndicators": true,
+    "cursorPagination": {
+      "batchSize": 20,
+      "showProgress": true
+    },
+    "errorHandling": {
+      "showStackTrace": false,
+      "suggestSolutions": true,
+      "exitOnError": true
+    }
+  },
+  "performance": {
+    "connectionTimeout": 30000,
+    "queryTimeout": 60000,
+    "maxConcurrentOperations": 10,
+    "cursorBufferSize": 1000
+  },
+  "logging": {
+    "level": "info",
+    "destination": "console",
+    "includeTimestamp": true,
+    "includeMetadata": true
+  }
+} 
